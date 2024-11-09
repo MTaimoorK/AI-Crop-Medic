@@ -1,0 +1,9 @@
+# Ignore virtual environment
+venv/
+
+# Ignore model files
+models/*.pkl
+
+# Ignore other potentially large files
+*.log
+__pycache__/

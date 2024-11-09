@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crop Disease Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .crop-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            display: none;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Crop Disease Detection System</h1>
+
+    <div class="crop-section">
+        <h2>Wheat Disease Detection</h2>
+        <form id="wheatForm" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Detect Disease</button>
+        </form>
+        <div id="wheatResult" class="result"></div>
+    </div>
+
+    <div class="crop-section">
+        <h2>Cotton Disease Detection</h2>
+        <form id="cottonForm" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Detect Disease</button>
+        </form>
+        <div id="cottonResult" class="result"></div>
+    </div>
+
+    <div class="crop-section">
+        <h2>Sugarcane Disease Detection</h2>
+        <form id="sugarcaneForm" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Detect Disease</button>
+        </form>
+        <div id="sugarcaneResult" class="result"></div>
+    </div>
+
+    <div class="crop-section">
+        <h2>Rice Disease Detection</h2>
+        <form id="riceForm" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Detect Disease</button>
+        </form>
+        <div id="riceResult" class="result"></div>
+    </div>
+
+    <script>
+        function handleSubmit(formId, endpoint) {
+            document.getElementById(formId).addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const resultDiv = document.getElementById(formId.replace('Form', 'Result'));
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(`/predict/${endpoint}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    
+                    resultDiv.style.display = 'block';
+                    if (data.error) {
+                        resultDiv.className = 'result error';
+                        resultDiv.textContent = `Error: ${data.error}`;
+                    } else {
+                        resultDiv.className = 'result success';
+                        resultDiv.textContent = `Prediction: ${data.prediction}`;
+                    }
+                } catch (error) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: Failed to process the request';
+                }
+            });
+        }
+
+        handleSubmit('wheatForm', 'wheat');
+        handleSubmit('cottonForm', 'cotton');
+        handleSubmit('sugarcaneForm', 'sugarcane');
+        handleSubmit('riceForm', 'rice');
+    </script>
+</body>
+</html>
